@@ -11,9 +11,9 @@ __version__ = '0.3.0'
 
 IMAGE_DIR = os.getcwd()+"\\images"
 MASK_IMAGES=["default-mask.png","black-mask.png","blue-mask.png"]
-IMAGE_PATHS =[os.path.join(IMAGE_DIR, mask_image) for mask_image in MASK_IMAGES] 
-FACE_FOLDER_PATH=os.getcwd()+"\\data\\without_mask"
-AUGMENTED_MASK_PATH=os.getcwd()+"\\data\\with_mask"
+MASK_IMAGE_PATHS =[os.path.join(IMAGE_DIR, mask_image) for mask_image in MASK_IMAGES] 
+FACE_FOLDER_PATH=os.getcwd()+"\\dataset\\without_mask"
+AUGMENTED_MASK_PATH=os.getcwd()+"\\dataset\\with_mask"
 
 
 
@@ -139,9 +139,9 @@ class FaceMasker:
 
 
 if __name__ == '__main__':
-    for image_path in IMAGE_PATHS:
-        COLOR="default"
-        FACE_IMAGE_PATHS=[os.getcwd()+"\\data\\without_mask\\"+path for path in listdir(FACE_FOLDER_PATH)]
+    for MASK_IMAGE_PATH in MASK_IMAGE_PATHS:
+        COLOR=MASK_IMAGE_PATH.split("\\")[-1].split(".")[0]
+        FACE_IMAGE_PATHS=[os.getcwd()+"\\dataset\\without_mask\\"+path for path in listdir(FACE_FOLDER_PATH)]
         for FACE_IMAGE_PATH in FACE_IMAGE_PATHS:
             print("face image path: ",FACE_IMAGE_PATH)
-            create_mask(FACE_IMAGE_PATH,DEFAULT_IMAGE_PATH ,AUGMENTED_MASK_PATH,color=COLOR)
+            create_mask(FACE_IMAGE_PATH,MASK_IMAGE_PATH ,AUGMENTED_MASK_PATH,COLOR)
