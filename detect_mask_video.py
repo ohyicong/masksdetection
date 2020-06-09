@@ -5,11 +5,18 @@ from tensorflow.keras.models import load_model
 from imutils.video import VideoStream
 #from pygame import mixer
 import numpy as np
-import argparse
 import imutils
 import time
 import cv2
 import os
+import math
+
+#system libraries
+import os
+import sys
+from threading import Timer
+import shutil
+import time
 
 detections = None 
 def detect_and_predict_mask(frame, faceNet, maskNet,threshold):
@@ -54,10 +61,11 @@ def detect_and_predict_mask(frame, faceNet, maskNet,threshold):
 			face = img_to_array(face)
 			face = preprocess_input(face)
 			face = np.expand_dims(face, axis=0)
-
+            
 			# add the face and bounding boxes to their respective
 			# lists
 			locs.append((startX, startY, endX, endY))
+			#print(maskNet.predict(face)[0].tolist())
 			preds.append(maskNet.predict(face)[0].tolist())
 	return (locs, preds)
 
@@ -86,13 +94,14 @@ print("[INFO] starting video stream...")
 vs = VideoStream(0).start()
 time.sleep(2.0)
 
+
 # loop over the frames from the video stream
 while True:
 	# grab the frame from the threaded video stream and resize it
 	# to have a maximum width of 400 pixels
 	frame = vs.read()
 	frame = imutils.resize(frame, width=400)
-
+	original_frame = frame.copy()
 	# detect faces in the frame and determine if they are wearing a
 	# face mask or not
 	(locs, preds) = detect_and_predict_mask(frame, faceNet, maskNet,THRESHOLD)
@@ -116,9 +125,12 @@ while True:
 
 		# display the label and bounding box rectangle on the output
 		# frame
-		cv2.putText(frame, label, (startX, startY - 10),
-			cv2.FONT_HERSHEY_SIMPLEX, 0.45, color, 2)
-		cv2.rectangle(frame, (startX, startY), (endX, endY), color, 2)
+		cv2.putText(original_frame, label, (startX, startY - 10),cv2.FONT_HERSHEY_SIMPLEX, 0.45, color, 2)
+		cv2.rectangle(original_frame, (startX, startY), (endX, endY), color, 2)
+		cv2.rectangle(frame, (startX, startY+math.floor((endY-startY)/1.6)), (endX, endY), color, -1)
+    
+
+	cv2.addWeighted(frame, 0.5, original_frame, 0.5 , 0,frame)
 
 	# show the output frame
 	frame= cv2.resize(frame,(860,490))
@@ -132,3 +144,5 @@ while True:
 # do a bit of cleanup
 cv2.destroyAllWindows()
 vs.stop()
+
+    
