@@ -121,6 +121,7 @@
 	    ctx.fillStyle = "rgba(255, 0, 0, 0.5)"; 
 
 	    model = await blazeface.load();
+	    
 	    mask_model = await tf.loadLayersModel('../static/models/model.json');
 
 	   renderPrediction();
