@@ -4,23 +4,35 @@
 	<title></title>
 	<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
 	<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/blazeface"></script>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
 </head>
 <style>
-  .canvas-output {
-    position: absolute;
-    top: 0;
-    left: 0;
-  }
+
 </style>
-<body>
-	<div id="main">
-		<div>
-			<video id="video" playsinline class="video-input"></video>
-	    	<canvas id="output" class="canvas-output"></canvas>
-		</div>
-		<br>
-		
-	    <a href="https://www.youtube.com/user/chirpieful">Oh Yicong (Youtube)</a>
+<body >
+	<div class="container p-0" >
+		<header >
+	      <nav class="navbar navbar-dark bg-dark rounded">
+	        <a class="navbar-brand">
+	        	<i class="fas fa-camera"></i>
+	        	<strong>Masks Detection</strong>
+	        </a>
+	      </nav>
+	    </header>
+	</div>
+	
+
+	<div class="container ">
+		<div class="row bg-light" style="height:480px">
+			<video id="video" playsinline class="border " style="margin:auto;display:inline-block;"></video>
+			<canvas id="output" class="canvas-output" style="margin:auto;position:relative;top:-480px;left:10px"></canvas>
+			<div class="float-right">
+	    		<a href="https://www.youtube.com/user/chirpieful">
+	    			<img src="../static/img/yicong.jpg" class="rounded" style="height:30px;width:30px;position:relative;top:-30px;">
+	    		</a>
+	    	</div>
+		</div> 
     </div>
 </body>
 <script>
@@ -45,13 +57,14 @@
 
 	const renderPrediction = async () => {
 		tf.engine().startScope()
+		ctx.clearRect(0, 0, canvas.width, canvas.height);
 		//estimatefaces model takes in 4 parameter (1) video, returnTensors, flipHorizontal, and annotateBoxes
 		const predictions = await model.estimateFaces(video, true,false,false);
 		const offset = tf.scalar(127.5);
 		//check if prediction length is more than 0
 		if (predictions.length > 0) {
 			//clear context
-		    ctx.clearRect(0, 0, canvas.width, canvas.height);
+		    
 		    for (let i = 0; i < predictions.length; i++) {
 		    	var text=""
 			    var start = predictions[i].topLeft.arraySync();
@@ -116,6 +129,8 @@
 	setupPage();
 
 </script>
-	
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>	
 
 </html>
