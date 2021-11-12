@@ -10,6 +10,8 @@ import time
 import cv2
 import os
 import math
+import winsound # utk project bunyi pilihan
+import pandas as pd # library utk RAW String
 
 #system libraries
 import os
@@ -74,6 +76,7 @@ MASK_MODEL_PATH=os.getcwd()+"\\model\\mask_model.h5"
 FACE_MODEL_PATH=os.getcwd()+"\\face_detector" 
 SOUND_PATH=os.getcwd()+"\\sounds\\alarm.wav" 
 THRESHOLD = 0.5
+count = 0 # inititalize nama file image yg akan di download
 
 # Load Sounds
 #mixer.init()
@@ -108,6 +111,7 @@ while True:
 
 	# loop over the detected face locations and their corresponding
 	# locations
+	
 	for (box, pred) in zip(locs, preds):
 		# unpack the bounding box and predictions
 		(startX, startY, endX, endY) = box
@@ -115,7 +119,25 @@ while True:
 
 		# determine the class label and color we'll use to draw
 		# the bounding box and text
-		label = "Mask" if mask > withoutMask else "No Mask"
+
+		#path utk file image no mask man
+		path = "C:/Users/user/Desktop/AI/Project_FaceMask/masksdetection/image_capture"
+		if(mask > withoutMask):
+			label = "Mask" 
+		else:
+			label = "No Mask"
+			#play bunyi alarm bila detect no mask man
+			winsound.PlaySound("beep-02", winsound.SND_FILENAME)
+			#capture image no mask man
+			this_image = vs.read()
+			#letak dekat folder image_capture
+			cv2.imwrite(os.path.join(path, "No Mask Face %d.jpg" % count), this_image)
+			cv2.waitKey(1000)
+			#add 1 to count
+			count += 1
+		
+		# label = "Mask" if mask > withoutMask else "No Mask"
+		
 		#if(label=="No Mask") and (mixer.get_busy()==False):
 		#    sound.play()
 		color = (0, 255, 0) if label == "Mask" else (0, 0, 255)
@@ -134,7 +156,7 @@ while True:
 
 	# show the output frame
 	frame= cv2.resize(frame,(860,490))
-	cv2.imshow("Masks Detection by Oh Yicong", frame)
+	cv2.imshow("Masks Detection By Semut Atas Kayu", frame)
 	key = cv2.waitKey(1) & 0xFF
 
 	# if the `q` key was pressed, break from the loop
